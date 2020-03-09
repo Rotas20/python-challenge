@@ -1,56 +1,30 @@
-import os
 import csv
+import os
 
-diff = []
-greatestPct = 0
-greatestmonth = ""
-leastmonth = ""
-leastPct = 99999999999999999999
+csv_file = os.path.join("Downloads","election_votes.csv")
+votes_per_candidate = {}
 
-totalProfitLosses = 0
+with open(csv_file, 'rU') as election:
+    csvreader = csv.reader(election, delimiter=",")
+    next(csvreader)
+    for row in csvreader:
+        if not votes_per_candidate.has_key(row[2]):
+            votes_per_candidate[row[2]] = 1
+        else:
+            votes_per_candidate[row[2]] = votes_per_candidate[row[2]] + 1
+            
+total_votes = sum(votes_per_candidate.values())
 
+for cadidate in votes_per_candidate:
+    print(cadidate, "{:.2%}".format(float(votes_per_candidate[cadidate]) / float(total_votes)))
+    
+list_of_cadidates = votes_per_candidate.keys()
+winner = max(votes_per_candidate, key=votes_per_candidate.get)
 
-csv_file = os.path.join("Resources", "budget_data.csv")
-
-print(os.path)
-
-
-with open(csv_file, 'r') as file_handler:
-    file_iterator = csv.reader(file_handler)
-
-#loop through everything except headers
-    next(file_iterator)
-
-#Calculate total amount of months
-    for i,fields in enumerate(file_iterator):
-        
-        totalProfitLosses = totalProfitLosses + int(fields[1])
-
-#print("i:", i, "fields[0]:", fields[0], "fields[1]:", fields[1])
-        if i!=0:
-            delta = int(fields[1]) - prev#
-            if delta > greatestPct:
-                greatestPct = delta
-                greatestmonth = fields[0]
-
-            if delta < leastPct:
-
-                leastPct = delta
-                leastmonth = fields[0]
-
-
-            diff.append(delta)
-            prev = int(fields[1])
-
-            diffMean = sum(diff)/len(diff)
-
-print(row_count)
-print(diffMean)
-print(greatestmonth,greatestPct)
-print(leastmonth, leastPct)
-print(totalProfitLosses)
+print(total_votes)
+print(winner)
+print(list_of_cadidates)
+print(votes_per_candidate)
 file_handler.close()
-
-
 
 
